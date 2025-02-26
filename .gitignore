@@ -1,0 +1,20 @@
+# Generic patterns
+*.a
+*.dll
+*.exe
+*.out
+*.pprof
+*.so
+*~
+._*
+
+# OS patterns
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# Editor patterns
+.idea
+.settings
+.vs
+.vscode
