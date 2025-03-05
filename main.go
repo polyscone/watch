@@ -86,7 +86,11 @@ func main() {
 	skipPatterns := strings.Fields(opts.skipPatterns)
 	watchPatterns := strings.Fields(opts.patterns)
 	skip := func(path string, entry fs.DirEntry) bool {
-		if path != "." && strings.HasPrefix(entry.Name(), ".") {
+		if path == "." {
+			return true
+		}
+
+		if strings.HasPrefix(entry.Name(), ".") {
 			skipDir := entry.IsDir() && opts.skipDotDirs
 			skipFile := !entry.IsDir() && opts.skipDotFiles
 
@@ -137,7 +141,7 @@ func main() {
 
 			if skip(path, entry) {
 				// Completely skip directories
-				if entry.IsDir() {
+				if entry.IsDir() && path != "." {
 					return filepath.SkipDir
 				}
 
