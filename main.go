@@ -31,6 +31,7 @@ var opts struct {
 	interval     time.Duration
 	verbose      bool
 	clear        bool
+	clearCmd     string
 	sigterm      bool
 	cmds         []string
 }
@@ -44,6 +45,7 @@ func main() {
 	flag.DurationVar(&opts.interval, "interval", 2*time.Second, "The interval to check for file changes")
 	flag.BoolVar(&opts.verbose, "verbose", false, "Print the commands that are about to be executed")
 	flag.BoolVar(&opts.clear, "clear", false, "Clear the terminal before running commands")
+	flag.StringVar(&opts.clearCmd, "clear-cmd", "", "An optional command to run to clear the terminal")
 	flag.BoolVar(&opts.sigterm, "sigterm", false, "On linux/mac use SIGTERM instead of SIGKILL")
 	flag.Parse()
 
@@ -251,7 +253,16 @@ func run(cmdStrs []string) {
 }
 
 func clear() {
-	fmt.Print("\033c")
+	if opts.clearCmd != "" {
+		cmd := exec.Command(opts.clearCmd)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		cmd.Run()
+	} else {
+		fmt.Print("\033c")
+	}
 }
 
 func command(program string, args ...string) (string, []string, string) {
